@@ -1,4 +1,3 @@
-import GLib from 'gi://GLib';
 import * as Utils from 'resource:///com/github/Aylur/ags/utils.js'
 import userOverrides from '../../user_options.js';
 
@@ -11,9 +10,9 @@ let configOptions = {
         'defaultTemperature': 0.9,
         'enhancements': true,
         'useHistory': true,
-        'safety': true,
+        'safety': false,
         'writingCursor': " ...", // Warning: Using weird characters can mess up Markdown rendering
-        'proxyUrl': null, // Can be "socks5://127.0.0.1:9050" or "http://127.0.0.1:8080" for example. Leave it blank if you don't need it.
+        'proxyUrl': "http://127.0.0.1:7890", // Can be "socks5://127.0.0.1:9050" or "http://127.0.0.1:8080" for example. Leave it blank if you don't need it.
     },
     'animations': {
         'choreographyDelay': 35,
@@ -29,8 +28,8 @@ let configOptions = {
         'keyboardUseFlag': false, // Use flag emoji instead of abbreviation letters
         'layerSmoke': false,
         'layerSmokeStrength': 0.2,
-        'barRoundCorners': 1, // 0: No, 1: Yes
-        'fakeScreenRounding': 1, // 0: None | 1: Always | 2: When not fullscreen
+        'barRoundCorners': 0, // 0: No, 1: Yes
+        'fakeScreenRounding': 0, // 0: None | 1: Always | 2: When not fullscreen
     },
     'apps': {
         'bluetooth': "blueberry",
@@ -38,14 +37,14 @@ let configOptions = {
         'network': "XDG_CURRENT_DESKTOP=\"gnome\" gnome-control-center wifi",
         'settings': "XDG_CURRENT_DESKTOP=\"gnome\" gnome-control-center",
         'taskManager': "gnome-usage",
-        'terminal': "foot", // This is only for shell actions
+        'terminal': "foot", // only for shell actions
     },
     'battery': {
         'low': 20,
         'critical': 10,
         'warnLevels': [20, 15, 5],
-        'warnTitles': ["Low battery", "Very low battery", 'Critical Battery'],
-        'warnMessages': ["Plug in the charger", "You there?", 'PLUG THE CHARGER ALREADY'],
+        'warnTitles': ["Low battery", "Very low battery", 'Critical battery'],
+        'warnMessages': ["Plug in the charger", "Plug in the charger immediately", 'PLUG IN THE CHARGER NOW'],
         'suspendThreshold': 3,
     },
     'brightness': {
@@ -68,10 +67,6 @@ let configOptions = {
             'size': 20,
             'color': 'rgba(113,227,32,0.9)',
         },
-    },
-    'i18n': {
-        'langCode': "",//Customize the locale, such as zh_CN,Optional value references "~/.config/ags/i18n/locales/"
-        'extraLogs': false
     },
     'monitors': {
         'scaleMethod': "division", // Either "division" [default] or "gdk"
@@ -122,10 +117,10 @@ let configOptions = {
             'commands': true,
             'mathResults': true,
             'directorySearch': true,
-            'aiSearch': true,
+            'aiSearch': false,
             'webSearch': true,
         },
-        'engineBaseUrl': "https://www.google.com/search?q=",
+        'engineBaseUrl': "https://www.duckduckgo.com/",
         'excludedSites': ["quora.com"],
     },
     'time': {
@@ -139,7 +134,7 @@ let configOptions = {
         'dateFormat': "%d/%m", // On notif time
     },
     'weather': {
-        'city': "",
+        'city': "Minhang, Shanghai",
         'preferredUnit': "C", // Either C or F
     },
     'workspaces': {
@@ -173,14 +168,13 @@ let configOptions = {
         // Example: ['/usr/share/icons/Tela-nord/scalable/apps']
         'searchPaths': [''],
         'symbolicIconTheme': {
-            "dark": "Adwaita",
-            "light": "Adwaita",
+            "dark": "Papirus",
+            "light": "Papirus",
         },
         substitutions: {
             'code-url-handler': "visual-studio-code",
             'Code': "visual-studio-code",
             'GitHub Desktop': "github-desktop",
-            'Minecraft* 1.20.1': "minecraft",
             'gnome-tweaks': "org.gnome.tweaks",
             'pavucontrol-qt': "pavucontrol",
             'wps': "wps-office2019-kprometheus",

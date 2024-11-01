@@ -12,7 +12,7 @@ import { monitors } from '../.commondata/hyprlanddata.js';
 
 const DISABLE_AGS_WALLPAPER = true;
 
-const SWITCHWALL_SCRIPT_PATH = `${App.configDir}/scripts/color_generation/switchwall.sh`;
+const SWITCHWALL_SCRIPT_PATH = `~/.local/bin/dots-hyprland/color_generation/switchwall.sh`;
 const WALLPAPER_ZOOM_SCALE = 1.25; // For scrolling when we switch workspace
 const MAX_WORKSPACES = 10;
 

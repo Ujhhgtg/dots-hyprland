@@ -78,4 +78,3 @@ App.config({
 // Stuff that don't need to be toggled. And they're async so ugh...
 forMonitorsAsync(Bar);
 // Bar().catch(print); // Use this to debug the bar. Single monitor only.
-

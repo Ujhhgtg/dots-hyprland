@@ -74,18 +74,18 @@ const Utilities = () => Box({
     className: 'spacing-h-4',
     children: [
         UtilButton({
-            name: getString('Screen snip'), icon: 'screenshot_region', onClicked: () => {
-                Utils.execAsync(`${App.configDir}/scripts/grimblast.sh copy area`)
+            name: 'Screen snip', icon: 'screenshot_region', onClicked: () => {
+                Utils.execAsync(`grimblast copy area`)
                     .catch(print)
             }
         }),
         UtilButton({
-            name: getString('Color picker'), icon: 'colorize', onClicked: () => {
+            name: 'Color picker', icon: 'colorize', onClicked: () => {
                 Utils.execAsync(['hyprpicker', '-a']).catch(print)
             }
         }),
         UtilButton({
-            name: getString('Toggle on-screen keyboard'), icon: 'keyboard', onClicked: () => {
+            name: 'Toggle on-screen keyboard', icon: 'keyboard', onClicked: () => {
                 toggleWindowOnAllMonitors('osk');
             }
         }),
@@ -218,7 +218,7 @@ const switchToRelativeWorkspace = async (self, num) => {
         const Hyprland = (await import('resource:///com/github/Aylur/ags/service/hyprland.js')).default;
         Hyprland.messageAsync(`dispatch workspace ${num > 0 ? '+' : ''}${num}`).catch(print);
     } catch {
-        execAsync([`${App.configDir}/scripts/sway/swayToRelativeWs.sh`, `${num}`]).catch(print);
+        execAsync(['bash', '-c', `~/.local/bin/dots-hyprland/sway/swayToRelativeWs.sh`, `${num}`]).catch(print);
     }
 }
 

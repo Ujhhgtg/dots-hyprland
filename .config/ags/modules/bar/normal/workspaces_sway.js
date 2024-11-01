@@ -15,7 +15,7 @@ const dummyOccupiedWs = Box({ className: 'bar-ws bar-ws-occupied' }); // Not sho
 
 const switchToWorkspace = (arg) => Utils.execAsync(`swaymsg workspace ${arg}`).catch(print);
 const switchToRelativeWorkspace = (self, num) =>
-    execAsync([`${App.configDir}/scripts/sway/swayToRelativeWs.sh`, `${num}`]).catch(print);
+    execAsync(['bash', '-c', `~/.local/bin/dots-hyprland/sway/swayToRelativeWs.sh`, `${num}`]).catch(print);
 
 const WorkspaceContents = (count = 10) => {
     return DrawingArea({

@@ -33,6 +33,7 @@ function v() {
     echo -e "\e[33m[$0]: Skipped \"$@\"\e[0m"
   fi
 }
+
 # When use v() for a defined function, use x() INSIDE its definition to catch errors.
 function x() {
   if "$@";then cmdstatus=0;else cmdstatus=1;fi # 0=normal; 1=failed; 2=failed but ignored
@@ -59,19 +60,10 @@ function x() {
     2) echo -e "\e[31m[$0]: Command \"\e[32m$@\e[31m\" has failed but ignored by user.\e[0m";;
   esac
 }
-function showfun() {
-  echo -e "\e[34m[$0]: The definition of function \"$1\" is as follows:\e[0m"
-  printf "\e[32m"
-  type -a $1
-  printf "\e[97m"
-}
-function remove_bashcomments_emptylines(){
-  mkdir -p $(dirname $2)
-  cat $1 | sed -e '/^[[:blank:]]*#/d;s/#.*//' -e '/^[[:space:]]*$/d' > $2
-}
+
 function prevent_sudo_or_root(){
   case $(whoami) in
-    root)echo -e "\e[31m[$0]: This script is NOT to be executed with sudo or as root. Aborting...\e[0m";exit 1;;
+    root)echo -e "\e[31m[$0]: This script is NOT meant to be executed with sudo or as root. Aborting...\e[0m";exit 1;;
   esac
 }
 

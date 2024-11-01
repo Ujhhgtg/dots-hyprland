@@ -9,11 +9,11 @@ const HYPRLAND_KEYBIND_CONFIG_FILE = userOptions.cheatsheet.keybinds.configPath 
     userOptions.cheatsheet.keybinds.configPath : `${GLib.get_user_config_dir()}/hypr/hyprland/keybinds.conf`;
 const KEYBIND_SECTIONS_PER_PAGE = 3;
 const getKeybindList = () => {
-    let data = Utils.exec(`${App.configDir}/scripts/hyprland/get_keybinds.py --path ${HYPRLAND_KEYBIND_CONFIG_FILE}`);
+    let data = Utils.exec(`.local/bin/dots-hyprland/hyprland/get_keybinds.py --path ${HYPRLAND_KEYBIND_CONFIG_FILE}`);
     if (data == "\"error\"") {
         Utils.timeout(2000, () => Utils.execAsync(['notify-send',
-            'Update path to keybinds',
-            'Keybinds hyprland config file not found. Check your user options.',
+        'Update path to keybinds',
+        'Keybinds hyprland config file not found. Check your user options.',
             '-a', 'ags',
         ]).catch(print))
         return { children: [] };
@@ -23,7 +23,7 @@ const getKeybindList = () => {
 const keybindList = getKeybindList();
 
 const keySubstitutions = {
-    "Super": "󰖳",
+    "Super": "Super",
     "mouse_up": "Scroll ↓",    // ikr, weird
     "mouse_down": "Scroll ↑",  // trust me bro
     "mouse:272": "LMB",
@@ -45,7 +45,7 @@ const Keybind = (keybindData, type) => { // type: either "keys" or "actions"
     });
     const Action = (text) => Label({ // Binds
         xalign: 0,
-        label: getString(text),
+        label: text,
         className: "txt txt-small cheatsheet-action",
     })
     return Widget.Box({
@@ -74,7 +74,7 @@ const Section = (sectionData, scope) => {
     const name = Label({
         xalign: 0,
         className: "cheatsheet-category-title txt margin-bottom-10",
-        label: getString(sectionData.name),
+        label: sectionData.name,
     })
     const binds = Box({
         className: 'spacing-h-10',

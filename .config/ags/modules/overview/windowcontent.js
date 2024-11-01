@@ -8,7 +8,7 @@ const { execAsync, exec } = Utils;
 import { execAndClose, expandTilde, hasUnterminatedBackslash, couldBeMath, launchCustomCommand, ls } from './miscfunctions.js';
 import {
     CalculationResultButton, CustomCommandButton, DirectoryButton,
-    DesktopEntryButton, ExecuteCommandButton, SearchButton, AiButton, NoResultButton,
+    DesktopEntryButton, ExecuteCommandButton, SearchButton, /*AiButton,*/ NoResultButton,
 } from './searchbuttons.js';
 import { checkKeybind } from '../.widgetutils/keybind.js';
 import GeminiService from '../../services/gemini.js';
@@ -70,7 +70,7 @@ export const SearchAndWindows = () => {
         hpack: 'center',
         child: Widget.Label({
             className: 'overview-search-prompt txt-small txt',
-            label: getString('Type to search')
+            label: 'Type to search'
         }),
     });
 

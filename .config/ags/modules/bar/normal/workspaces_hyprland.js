@@ -203,7 +203,7 @@ export default () => EventBox({
             const [_, cursorX, cursorY] = event.get_coords();
             const widgetWidth = self.get_allocation().width;
             const wsId = Math.ceil(cursorX * userOptions.workspaces.shown / widgetWidth);
-            Utils.execAsync([`${App.configDir}/scripts/hyprland/workspace_action.sh`, 'workspace', `${wsId}`])
+            Utils.execAsync(['bash', '-c', `~/.local/bin/dots-hyprland/hyprland/workspace_action.sh workspace ${wsId}`])
                 .catch(print);
         })
         self.on('button-press-event', (self, event) => {
@@ -212,7 +212,7 @@ export default () => EventBox({
                 const [_, cursorX, cursorY] = event.get_coords();
                 const widgetWidth = self.get_allocation().width;
                 const wsId = Math.ceil(cursorX * userOptions.workspaces.shown / widgetWidth);
-                Utils.execAsync([`${App.configDir}/scripts/hyprland/workspace_action.sh`, 'workspace', `${wsId}`])
+                Utils.execAsync(['bash', '-c', `~/.local/bin/dots-hyprland/hyprland/workspace_action.sh workspace ${wsId}`])
                     .catch(print);
             }
             else if (event.get_button()[1] === 8) {
