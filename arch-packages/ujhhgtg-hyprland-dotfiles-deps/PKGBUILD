@@ -1,10 +1,11 @@
 pkgname=ujhhgtg-hyprland-dotfiles-deps
-pkgver=1.0
+pkgver=1.1
 pkgrel=1
 pkgdesc='Ujhhgtg''s Hyprland Dotfiles (modified from Illogical Impulse) Dependencies'
 arch=('x86_64')
 license=(None)
 depends=(
+	# Hyprland & Ags
     hyprutils-git
     hyprlang-git
     hyprcursor-git
@@ -14,16 +15,10 @@ depends=(
 	hyprlock-git
     hyprwayland-scanner-git
     aylurs-gtk-shell-git
-
-    microtex-git
-
-    dart-sass
-	python-pywayland
-	python-psutil
-	# wlogout
 	wl-clipboard
 	anyrun-git
 
+	# Theming
     adw-gtk-theme-git
 	qt5ct
     qt6ct
@@ -38,9 +33,13 @@ depends=(
 	ttf-space-mono-nerd
 	ttf-rubik-vf
     ttf-gabarito-git
+	bibata-cursor-theme
+
+	# Terminal & Shell
 	fish
 	foot
 
+	# Screen snapping & recording
     swappy
 	wf-recorder
 	grim
@@ -49,38 +48,49 @@ depends=(
 	slurp
 	grimblast
 
+	# Script & Keybind Dependencies
     python
 	python-build
 	python-pillow
 	python-pywal
 	python-setuptools-scm
 	python-wheel
-
+	microtex-git
+    dart-sass
+	python-pywayland
+	python-psutil
     python-materialyoucolor-git
 	gradience
 	python-libsass
 	python-material-color-utilities
+	upower
+	yad
+	ydotool
+	brightnessctl
+	ddcutil
+    pavucontrol
+	wireplumber
+	libdbusmenu-gtk3
+	playerctl
+	swww
 
+	# Xdg
     xdg-desktop-portal
 	xdg-desktop-portal-gtk
 	xdg-desktop-portal-hyprland-git
 
+	# Tools
     webp-pixbuf-loader
 	gtk-layer-shell
 	gtk3
 	gtksourceview3
 	gobject-introspection
-	upower
-	yad
-	ydotool
 	xdg-user-dirs-gtk
-
     polkit-gnome
 	gnome-keyring
 	gnome-control-center
 	blueberry
 	networkmanager
-	# gammastep
 	gnome-bluetooth-3.0
 
     axel
@@ -99,13 +109,7 @@ depends=(
 	typescript
 	gjs
 	xdg-user-dirs
-
-    brightnessctl
-	ddcutil
-
-    pavucontrol
-	wireplumber
-	libdbusmenu-gtk3
-	playerctl
-	swww
+)
+optdepends=(
+	'gammastep: night light'
 )
