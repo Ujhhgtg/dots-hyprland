@@ -85,7 +85,7 @@ const Utilities = () => Box({
             }
         }),
         UtilButton({
-            name: 'Toggle on-screen keyboard', icon: 'keyboard', onClicked: () => {
+            name: 'On-screen keyboard', icon: 'keyboard', onClicked: () => {
                 toggleWindowOnAllMonitors('osk');
             }
         }),
