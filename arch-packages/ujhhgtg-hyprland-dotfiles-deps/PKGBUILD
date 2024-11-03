@@ -5,111 +5,112 @@ pkgdesc='Ujhhgtg''s Hyprland Dotfiles (modified from Illogical Impulse) Dependen
 arch=('x86_64')
 license=(None)
 depends=(
-	# Hyprland & Ags
+    # Hyprland & Ags
     hyprutils-git
     hyprlang-git
     hyprcursor-git
-	hyprpicker-git
-	hypridle-git
- 	hyprutils-git
-	hyprlock-git
+    hyprpicker-git
+    hypridle-git
+     hyprutils-git
+    hyprlock-git
     hyprwayland-scanner-git
     aylurs-gtk-shell-git
-	wl-clipboard
-	anyrun-git
+    wl-clipboard
+    anyrun-git
 
-	# Theming
+    # Theming
     adw-gtk-theme-git
-	qt5ct
+    qt5ct
     qt6ct
-	qt5-wayland
+    qt5-wayland
     qt6-wayland
     kvantum
     kvantum-qt5
-	fontconfig
-	ttf-readex-pro
-	ttf-jetbrains-mono-nerd
-	ttf-material-symbols-variable-git
-	ttf-space-mono-nerd
-	ttf-rubik-vf
+    fontconfig
+    ttf-readex-pro
+    ttf-jetbrains-mono-nerd
+    ttf-material-symbols-variable-git
+    ttf-space-mono-nerd
+    ttf-rubik-vf
     ttf-gabarito-git
-	bibata-cursor-theme
+    bibata-cursor-theme
 
-	# Terminal & Shell
-	fish
-	foot
+    # Terminal & Shell
+    fish
+    foot
 
-	# Screen snapping & recording
+    # Screen snapping & recording
     swappy
-	wf-recorder
-	grim
-	tesseract
-	tesseract-data-eng
-	slurp
-	grimblast
+    wf-recorder
+    grim
+    tesseract
+    tesseract-data-eng
+    slurp
+    grimblast
 
-	# Script & Keybind Dependencies
+    # Script & Keybind Dependencies
     python
-	python-build
-	python-pillow
-	python-pywal
-	python-setuptools-scm
-	python-wheel
-	microtex-git
+    python-build
+    python-pillow
+    python-pywal
+    python-setuptools-scm
+    python-wheel
+    microtex-git
     dart-sass
-	python-pywayland
-	python-psutil
+    python-pywayland
+    python-psutil
     python-materialyoucolor-git
-	gradience
-	python-libsass
-	python-material-color-utilities
-	upower
-	yad
-	ydotool
-	brightnessctl
-	ddcutil
+    gradience
+    python-libsass
+    python-material-color-utilities
+    upower
+    yad
+    ydotool
+    brightnessctl
+    ddcutil
     pavucontrol
-	wireplumber
-	libdbusmenu-gtk3
-	playerctl
-	swww
+    wireplumber
+    libdbusmenu-gtk3
+    playerctl
+    swww
+    fastfetch
 
-	# Xdg
+    # Xdg
     xdg-desktop-portal
-	xdg-desktop-portal-gtk
-	xdg-desktop-portal-hyprland-git
+    xdg-desktop-portal-gtk
+    xdg-desktop-portal-hyprland-git
 
-	# Tools
+    # Tools
     webp-pixbuf-loader
-	gtk-layer-shell
-	gtk3
-	gtksourceview3
-	gobject-introspection
-	xdg-user-dirs-gtk
+    gtk-layer-shell
+    gtk3
+    gtksourceview3
+    gobject-introspection
+    xdg-user-dirs-gtk
     polkit-gnome
-	gnome-keyring
-	gnome-control-center
-	blueberry
-	networkmanager
-	gnome-bluetooth-3.0
+    gnome-keyring
+    gnome-control-center
+    blueberry
+    networkmanager
+    gnome-bluetooth-3.0
 
     axel
-	bc
-	coreutils
-	cliphist
-	cmake
-	curl
-	fuzzel
-	rsync
-	wget
-	ripgrep
-	jq
-	npm
-	meson
-	typescript
-	gjs
-	xdg-user-dirs
+    bc
+    coreutils
+    cliphist
+    cmake
+    curl
+    fuzzel
+    rsync
+    wget
+    ripgrep
+    jq
+    npm
+    meson
+    typescript
+    gjs
+    xdg-user-dirs
 )
 optdepends=(
-	'gammastep: night light'
+    'gammastep: night light'
 )
