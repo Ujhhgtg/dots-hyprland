@@ -11,7 +11,7 @@ depends=(
     hyprcursor-git
     hyprpicker-git
     hypridle-git
-     hyprutils-git
+    hyprutils-git
     hyprlock-git
     hyprwayland-scanner-git
     aylurs-gtk-shell-git
@@ -75,6 +75,10 @@ depends=(
     swww
     fastfetch
     librewolf
+    ttf-meslo-nerd-font-powerlevel10k
+    code
+    code-features
+    code-marketplace
 
     # Xdg
     xdg-desktop-portal
