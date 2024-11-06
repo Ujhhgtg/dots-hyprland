@@ -70,6 +70,7 @@ v install-local-pkgbuild "./arch-packages/ujhhgtg-hyprland-dotfiles-deps" "--nee
 v sudo usermod -aG video,i2c,input "$(whoami)"
 v bash -c "echo i2c-dev | sudo tee /etc/modules-load.d/i2c-dev.conf"
 v systemctl --user enable --now ydotool
+v systemctl --user enable --now foot-server
 
 #####################################################################################
 printf "\e[36m[$0]: 2. Copying configuration files\e[0m\n"
