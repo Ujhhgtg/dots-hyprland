@@ -74,6 +74,7 @@ depends=(
     playerctl
     swww
     fastfetch
+    librewolf
 
     # Xdg
     xdg-desktop-portal
