@@ -65,7 +65,7 @@ install-local-pkgbuild() {
 	x popd
 }
 
-v install-local-pkgbuild "./arch-packages/ujhhgtg-hyprland-dotfiles-deps" "--needed --noconfirm"
+v install-local-pkgbuild "./arch-packages/ujhhgtg-hyprland-dotfiles" "--needed --noconfirm"
 
 v sudo usermod -aG video,i2c,input "$(whoami)"
 v bash -c "echo i2c-dev | sudo tee /etc/modules-load.d/i2c-dev.conf"
@@ -78,102 +78,22 @@ printf "\e[36m[$0]: 2. Copying configuration files\e[0m\n"
 # In case some folders does not exist
 v mkdir -p $XDG_BIN_HOME $XDG_CACHE_HOME $XDG_CONFIG_HOME $XDG_DATA_HOME
 
-# `--delete' for rsync to make sure that
-# original dotfiles and new ones in the SAME DIRECTORY
-# (eg. in ~/.config/hypr) won't be mixed together
+for i in $(find .config/ -mindepth 1 -maxdepth 1 -exec basename {} \;); do
+  echo "[$0]: Found target: .config/$i"
+  if [ -d ".config/$i" ];then v rsync -av --delete ".config/$i/" "$XDG_CONFIG_HOME/$i/"
+  elif [ -f ".config/$i" ];then v rsync -av ".config/$i" "$XDG_CONFIG_HOME/$i"
+  fi
+done
 
-# ~/.config (excluding ags, fish, hyprland)
-case $SKIP_MISCCONF in
-  true) sleep 0;;
-  *)
-    for i in $(find .config/ -mindepth 1 -maxdepth 1 ! -name 'ags' ! -name 'fish' ! -name 'hypr' -exec basename {} \;); do
-#      i=".config/$i"
-      echo "[$0]: Found target: .config/$i"
-      if [ -d ".config/$i" ];then v rsync -av --delete ".config/$i/" "$XDG_CONFIG_HOME/$i/"
-      elif [ -f ".config/$i" ];then v rsync -av ".config/$i" "$XDG_CONFIG_HOME/$i"
-      fi
-    done
-    ;;
-esac
+fish -c "set --local plugins (read --null < $XDG_CONFIG_HOME/fish/fish_plugins) && curl -sL https://raw.githubusercontent.com/jorgebucaran/fisher/main/functions/fisher.fish | source && fisher install $plugins"
 
-case $SKIP_FISH in
-  true) sleep 0;;
-  *)
-    v rsync -av --delete .config/fish/ "$XDG_CONFIG_HOME"/fish/
-    ;;
-esac
+v rm -rf "$XDG_BIN_HOME/dots-hyprland/"
+v ln -s ".local/bin/dots-hyprland" "$XDG_BIN_HOME/dots-hyprland"
 
-case $SKIP_AGS in
-  true) sleep 0;;
-  *)
-    v rsync -av --delete --exclude '/user_options.js' .config/ags/ "$XDG_CONFIG_HOME"/ags/
-    t="$XDG_CONFIG_HOME/ags/user_options.js"
-    if [ -f $t ];then
-      echo -e "\e[34m[$0]: \"$t\" already exists.\e[0m"
-      # v cp -f .config/ags/user_options.js $t.new
-      existed_ags_opt=y
-    else
-      echo -e "\e[33m[$0]: \"$t\" does not exist yet.\e[0m"
-      v cp .config/ags/user_options.js $t
-      existed_ags_opt=n
-    fi
-    ;;
-esac
-
-case $SKIP_HYPRLAND in
-  true) sleep 0;;
-  *)
-    v rsync -av --delete --exclude '/custom' --exclude '/hyprland.conf' .config/hypr/ "$XDG_CONFIG_HOME"/hypr/
-    t="$XDG_CONFIG_HOME/hypr/hyprland.conf"
-    if [ -f $t ];then
-      echo -e "\e[34m[$0]: \"$t\" already exists.\e[0m"
-      v cp -f .config/hypr/hyprland.conf $t.new
-      existed_hypr_conf=y
-    else
-      echo -e "\e[33m[$0]: \"$t\" does not exist yet.\e[0m"
-      v cp .config/hypr/hyprland.conf $t
-      existed_hypr_conf=n
-    fi
-    t="$XDG_CONFIG_HOME/hypr/custom"
-    if [ -d $t ];then
-      echo -e "\e[34m[$0]: \"$t\" already exists, will not do anything.\e[0m"
-    else
-      echo -e "\e[33m[$0]: \"$t\" does not exist yet.\e[0m"
-      v rsync -av --delete .config/hypr/custom/ $t/
-    fi
-    ;;
-esac
-
-
-# some foldes (eg. .local/bin) should be processed separately to avoid `--delete' for rsync,
-# since the files here come from different places, not only about one program.
-v rsync -av ".local/bin/" "$XDG_BIN_HOME"
-
-# Dark mode by default
 v gsettings set org.gnome.desktop.interface color-scheme 'prefer-dark'
 
-# Prevent hyprland from not fully loaded
 sleep 1
 try hyprctl reload
-
-warn_files=()
-warn_files_tests=()
-warn_files_tests+=(/usr/local/bin/ags)
-warn_files_tests+=(/usr/local/etc/pam.d/ags)
-warn_files_tests+=(/usr/local/lib/{GUtils-1.0.typelib,Gvc-1.0.typelib,libgutils.so,libgvc.so})
-warn_files_tests+=(/usr/local/share/com.github.Aylur.ags)
-warn_files_tests+=(/usr/local/share/fonts/TTF/Rubik{,-Italic}'[wght]'.ttf)
-warn_files_tests+=(/usr/local/share/licenses/ttf-rubik)
-warn_files_tests+=(/usr/local/share/fonts/TTF/Gabarito-{Black,Bold,ExtraBold,Medium,Regular,SemiBold}.ttf)
-warn_files_tests+=(/usr/local/share/licenses/ttf-gabarito)
-warn_files_tests+=(/usr/local/share/icons/OneUI{,-dark,-light})
-warn_files_tests+=(/usr/local/share/icons/Bibata-Modern-Classic)
-warn_files_tests+=(/usr/local/bin/{LaTeX,res})
-for i in ${warn_files_tests[@]}; do
-  echo $i
-  test -f $i && warn_files+=($i)
-  test -d $i && warn_files+=($i)
-done
 
 #####################################################################################
 printf "\e[36m[$0]: Finished.\e[0m\n"
@@ -186,17 +106,3 @@ printf "\e[36mIf you are already running Hyprland,\e[0m\n"
 printf "\e[36mPress \e[30m\e[46m Ctrl+Super+T \e[0m\e[36m to select a wallpaper\e[0m\n"
 printf "\e[36mPress \e[30m\e[46m Super+/ \e[0m\e[36m for a list of keybinds\e[0m\n"
 printf "\n"
-
-case $existed_ags_opt in
-  y) printf "\n\e[33m[$0]: Warning: \"$XDG_CONFIG_HOME/ags/user_options.js\" already existed before and we didn't overwrite it. \e[0m\n"
-#    printf "\e[33mPlease use \"$XDG_CONFIG_HOME/ags/user_options.js.new\" as a reference for a proper format.\e[0m\n"
-;;esac
-case $existed_hypr_conf in
-  y) printf "\n\e[33m[$0]: Warning: \"$XDG_CONFIG_HOME/hypr/hyprland.conf\" already existed before and we didn't overwrite it. \e[0m\n"
-     printf "\e[33mPlease use \"$XDG_CONFIG_HOME/hypr/hyprland.conf.new\" as a reference for a proper format.\e[0m\n"
-     printf "\e[33mIf this is your first time installation, you must overwrite \"$XDG_CONFIG_HOME/hypr/hyprland.conf\" with \"$XDG_CONFIG_HOME/hypr/hyprland.conf.new\".\e[0m\n"
-;;esac
-
-if [[ ! -z "${warn_files[@]}" ]]; then
-  printf "\n\e[31m[$0]: \!! Important \!! : Please delete \e[0m ${warn_files[*]} \e[31m manually as soon as possible, since we\'re now using AUR package or local PKGBUILD to install them for Arch(based) Linux distros, and they'll take precedence over our installation, or at least take up more space.\e[0m\n"
-fi

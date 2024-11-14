@@ -1,5 +1,5 @@
-pkgname=ujhhgtg-hyprland-dotfiles-deps
-pkgver=1.1
+pkgname=ujhhgtg-hyprland-dotfiles
+pkgver=1.2
 pkgrel=1
 pkgdesc='Ujhhgtg''s Hyprland Dotfiles (modified from Illogical Impulse) Dependencies'
 arch=('x86_64')
@@ -11,7 +11,7 @@ depends=(
     hyprcursor-git
     hyprpicker-git
     hypridle-git
-     hyprutils-git
+    hyprutils-git
     hyprlock-git
     hyprwayland-scanner-git
     aylurs-gtk-shell-git
@@ -38,6 +38,10 @@ depends=(
     # Terminal & Shell
     fish
     foot
+    fzf
+    fd
+    bat
+    nano
 
     # Screen snapping & recording
     swappy
@@ -114,4 +118,7 @@ depends=(
 )
 optdepends=(
     'gammastep: night light'
+)
+replaces=(
+    'ujhhgtg-hyprland-dotfiles-deps'
 )
