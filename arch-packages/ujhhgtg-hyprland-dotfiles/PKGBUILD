@@ -79,6 +79,10 @@ depends=(
     swww
     fastfetch
     librewolf
+    ttf-meslo-nerd-font-powerlevel10k
+    code
+    code-features
+    code-marketplace
 
     # Xdg
     xdg-desktop-portal
