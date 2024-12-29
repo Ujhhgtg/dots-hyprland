@@ -6,7 +6,7 @@ function fish_greeting
         cat ~/.cache/ags/user/generated/terminal/sequences.txt
     end
 
-    if command fastfetch
+    if command -v fastfetch
         fastfetch
     end
 end

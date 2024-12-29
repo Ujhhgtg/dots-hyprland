@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+
 import argparse
 import math
 import json
@@ -32,7 +33,7 @@ argb_to_hex = lambda argb: "#{:02X}{:02X}{:02X}".format(*map(round, rgba_from_ar
 hex_to_argb = lambda hex_code: argb_from_rgb(int(hex_code[1:3], 16), int(hex_code[3:5], 16), int(hex_code[5:], 16))
 display_color = lambda rgba : "\x1B[38;2;{};{};{}m{}\x1B[0m".format(rgba[0], rgba[1], rgba[2], "\x1b[7m   \x1b[7m")
 
-def calculate_optimal_size (width: int, height: int, bitmap_size: int) -> (int, int):
+def calculate_optimal_size(width: int, height: int, bitmap_size: int) -> (int, int):
     image_area = width * height;
     bitmap_area = bitmap_size ** 2
     scale = math.sqrt(bitmap_area/image_area) if image_area > bitmap_area else 1
@@ -44,7 +45,7 @@ def calculate_optimal_size (width: int, height: int, bitmap_size: int) -> (int, 
         new_height = 1
     return new_width, new_height
 
-def harmonize (design_color: int, source_color: int, threshold: float = 35, harmony: float = 0.5) -> int:
+def harmonize(design_color: int, source_color: int, threshold: float = 35, harmony: float = 0.5) -> int:
     from_hct = Hct.from_int(design_color)
     to_hct = Hct.from_int(source_color)
     difference_degrees_ = difference_degrees(from_hct.hue, to_hct.hue)
@@ -58,8 +59,8 @@ def boost_chroma_tone (argb: int, chroma: float = 1, tone: float = 1) -> int:
     hct = Hct.from_int(argb)
     return Hct.from_hct(hct.hue, hct.chroma * chroma, hct.tone * tone).to_int()
 
-darkmode = (args.mode == 'dark')
-transparent = (args.transparency == 'transparent')
+darkmode = args.mode == 'dark'
+transparent = args.transparency == 'transparent'
 
 if args.path is not None:
     image = Image.open(args.path)
