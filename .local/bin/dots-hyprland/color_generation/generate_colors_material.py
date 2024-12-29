@@ -78,11 +78,12 @@ if args.path is not None:
         with open(args.cache, 'w') as file:
             file.write(argb_to_hex(argb))
     hct = Hct.from_int(argb)
-    if(args.smart):
-        if(hct.chroma < 20):
+    if (args.smart):
+        if (hct.chroma < 20):
             args.scheme = 'neutral'
-        if(hct.tone > 60):
-            darkmode = False
+        # keep user's dark preference
+        # if (hct.tone > 60):
+        #     darkmode = False
 elif args.color is not None:
     argb = hex_to_argb(args.color)
     hct = Hct.from_int(argb)

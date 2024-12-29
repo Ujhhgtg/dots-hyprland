@@ -8,11 +8,11 @@ export const isDebianDistro = (distroID == 'linuxmint' || distroID == 'ubuntu' |
 export const isArchDistro = (distroID == 'arch' || distroID == 'endeavouros' || distroID == 'cachyos');
 export const hasFlatpak = !!exec(`bash -c 'command -v flatpak'`);
 
-const LIGHTDARK_FILE_LOCATION = `${GLib.get_user_state_dir()}/ags/user/colormode.txt`;
+const LIGHTDARK_FILE_LOCATION = `${GLib.get_user_state_dir()}/dots-hyprland/user/colormode.txt`;
 export const darkMode = Variable(!(Utils.readFile(LIGHTDARK_FILE_LOCATION).split('\n')[0].trim() == 'light'));
 darkMode.connect('changed', ({ value }) => {
     let lightdark = value ? "dark" : "light";
-    execAsync([`bash`, `-c`, `mkdir -p ${GLib.get_user_state_dir()}/ags/user && sed -i "1s/.*/${lightdark}/"  ${GLib.get_user_state_dir()}/ags/user/colormode.txt`])
+    execAsync([`bash`, `-c`, `mkdir -p ${GLib.get_user_state_dir()}/dots-hyprland/user && sed -i "1s/.*/${lightdark}/"  ${GLib.get_user_state_dir()}/dots-hyprland/user/colormode.txt`])
         .then(execAsync(['bash', '-c', `~/.local/bin/dots-hyprland/color_generation/switchcolor.sh`]))
         .then(execAsync(['bash', '-c', `command -v darkman && darkman set ${lightdark}`])) // Optional darkman integration
         .catch(print);

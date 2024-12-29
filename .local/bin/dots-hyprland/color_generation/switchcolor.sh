@@ -3,9 +3,9 @@
 XDG_CONFIG_HOME="${XDG_CONFIG_HOME:-$HOME/.config}"
 XDG_CACHE_HOME="${XDG_CACHE_HOME:-$HOME/.cache}"
 XDG_STATE_HOME="${XDG_STATE_HOME:-$HOME/.local/state}"
-CONFIG_DIR="$XDG_CONFIG_HOME/ags"
-CACHE_DIR="$XDG_CACHE_HOME/ags"
-STATE_DIR="$XDG_STATE_HOME/ags"
+CACHE_DIR="$XDG_CACHE_HOME/dots-hyprland"
+STATE_DIR="$XDG_STATE_HOME/dots-hyprland"
+DOTFILES_SCRIPT_DIR="$HOME/.local/bin/dots-hyprland"
 
 COLORMODE_FILE_DIR="$STATE_DIR/user/colormode.txt"
 
@@ -35,5 +35,5 @@ elif [ "$2" == "--yes-gradience" ]; then
   fi
 fi
 
-# Generate colors for ags n stuff
-"$CONFIG_DIR"/scripts/color_generation/colorgen.sh "${color}" --apply
+# Generate colors for ags
+"$DOTFILES_SCRIPT_DIR"/color_generation/colorgen.sh "${color}" --apply

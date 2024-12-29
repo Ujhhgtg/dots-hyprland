@@ -3,27 +3,18 @@
 XDG_CONFIG_HOME="${XDG_CONFIG_HOME:-$HOME/.config}"
 XDG_CACHE_HOME="${XDG_CACHE_HOME:-$HOME/.cache}"
 XDG_STATE_HOME="${XDG_STATE_HOME:-$HOME/.local/state}"
-CONFIG_DIR="$XDG_CONFIG_HOME/ags"
-CACHE_DIR="$XDG_CACHE_HOME/ags"
-STATE_DIR="$XDG_STATE_HOME/ags"
+CACHE_DIR="$XDG_CACHE_HOME/dots-hyprland"
+STATE_DIR="$XDG_STATE_HOME/dots-hyprland"
+DOTFILES_SCRIPT_DIR="$HOME/.local/bin/dots-hyprland"
 
-term_alpha=100 #Set this to < 100 make all your terminals transparent
-# sleep 0 # idk i wanted some delay or colors dont get applied properly
-if [ ! -d "$CACHE_DIR"/user/generated ]; then
-    mkdir -p "$CACHE_DIR"/user/generated
-fi
-cd "$CONFIG_DIR" || exit
+term_alpha=100 # set this to < 100 make all your terminals transparent
+mkdir -p "$CACHE_DIR"/user/generated
+cd "$DOTFILES_SCRIPT_DIR" || exit
 
 colornames=''
 colorstrings=''
 colorlist=()
 colorvalues=()
-
-# wallpath=$(swww query | head -1 | awk -F 'image: ' '{print $2}')
-# wallpath_png="$CACHE_DIR/user/generated/hypr/lockscreen.png"
-# convert "$wallpath" "$wallpath_png"
-# wallpath_png=$(echo "$wallpath_png" | sed 's/\//\\\//g')
-# wallpath_png=$(sed 's/\//\\\\\//g' <<< "$wallpath_png")
 
 transparentize() {
   local hex="$1"
@@ -49,30 +40,30 @@ get_light_dark() {
 
 apply_fuzzel() {
     # Check if scripts/templates/fuzzel/fuzzel.ini exists
-    if [ ! -f "scripts/templates/fuzzel/fuzzel.ini" ]; then
-        echo "Template file not found for Fuzzel. Skipping that."
+    if [ ! -f "templates/fuzzel/fuzzel.ini" ]; then
+        echo "Template file not found for Fuzzel. Skipping."
         return
     fi
     # Copy template
     mkdir -p "$CACHE_DIR"/user/generated/fuzzel
-    cp "scripts/templates/fuzzel/fuzzel.ini" "$CACHE_DIR"/user/generated/fuzzel/fuzzel.ini
+    cp "templates/fuzzel/fuzzel.ini" "$CACHE_DIR"/user/generated/fuzzel/fuzzel.ini
     # Apply colors
     for i in "${!colorlist[@]}"; do
         sed -i "s/{{ ${colorlist[$i]} }}/${colorvalues[$i]#\#}/g" "$CACHE_DIR"/user/generated/fuzzel/fuzzel.ini
     done
 
-    cp  "$CACHE_DIR"/user/generated/fuzzel/fuzzel.ini "$XDG_CONFIG_HOME"/fuzzel/fuzzel.ini
+    cp "$CACHE_DIR"/user/generated/fuzzel/fuzzel.ini "$XDG_CONFIG_HOME"/fuzzel/fuzzel.ini
 }
 
 apply_term() {
     # Check if terminal escape sequence template exists
-    if [ ! -f "scripts/templates/terminal/sequences.txt" ]; then
-        echo "Template file not found for Terminal. Skipping that."
+    if [ ! -f "templates/terminal/sequences.txt" ]; then
+        echo "Template file not found for Terminal. Skipping."
         return
     fi
     # Copy template
     mkdir -p "$CACHE_DIR"/user/generated/terminal
-    cp "scripts/templates/terminal/sequences.txt" "$CACHE_DIR"/user/generated/terminal/sequences.txt
+    cp "templates/terminal/sequences.txt" "$CACHE_DIR"/user/generated/terminal/sequences.txt
     # Apply colors
     for i in "${!colorlist[@]}"; do
         sed -i "s/${colorlist[$i]} #/${colorvalues[$i]#\#}/g" "$CACHE_DIR"/user/generated/terminal/sequences.txt
@@ -89,13 +80,13 @@ apply_term() {
 
 apply_hyprland() {
     # Check if scripts/templates/hypr/hyprland/colors.conf exists
-    if [ ! -f "scripts/templates/hypr/hyprland/colors.conf" ]; then
-        echo "Template file not found for Hyprland colors. Skipping that."
+    if [ ! -f "templates/hypr/hyprland/colors.conf" ]; then
+        echo "Template file not found for Hyprland colors. Skipping."
         return
     fi
     # Copy template
     mkdir -p "$CACHE_DIR"/user/generated/hypr/hyprland
-    cp "scripts/templates/hypr/hyprland/colors.conf" "$CACHE_DIR"/user/generated/hypr/hyprland/colors.conf
+    cp "templates/hypr/hyprland/colors.conf" "$CACHE_DIR"/user/generated/hypr/hyprland/colors.conf
     # Apply colors
     for i in "${!colorlist[@]}"; do
         sed -i "s/{{ ${colorlist[$i]} }}/${colorvalues[$i]#\#}/g" "$CACHE_DIR"/user/generated/hypr/hyprland/colors.conf
@@ -106,13 +97,13 @@ apply_hyprland() {
 
 apply_hyprlock() {
     # Check if scripts/templates/hypr/hyprlock.conf exists
-    if [ ! -f "scripts/templates/hypr/hyprlock.conf" ]; then
-        echo "Template file not found for hyprlock. Skipping that."
+    if [ ! -f "templates/hypr/hyprlock.conf" ]; then
+        echo "Template file not found for hyprlock. Skipping."
         return
     fi
     # Copy template
     mkdir -p "$CACHE_DIR"/user/generated/hypr/
-    cp "scripts/templates/hypr/hyprlock.conf" "$CACHE_DIR"/user/generated/hypr/hyprlock.conf
+    cp "templates/hypr/hyprlock.conf" "$CACHE_DIR"/user/generated/hypr/hyprlock.conf
     # Apply colors
     # sed -i "s/{{ SWWW_WALL }}/${wallpath_png}/g" "$CACHE_DIR"/user/generated/hypr/hyprlock.conf
     for i in "${!colorlist[@]}"; do
@@ -141,7 +132,7 @@ apply_gtk() { # Using gradience-cli
 
     # Copy template
     mkdir -p "$CACHE_DIR"/user/generated/gradience
-    cp "scripts/templates/gradience/preset.json" "$CACHE_DIR"/user/generated/gradience/preset.json
+    cp "templates/gradience/preset.json" "$CACHE_DIR"/user/generated/gradience/preset.json
 
     # Apply colors
     for i in "${!colorlist[@]}"; do
@@ -151,19 +142,19 @@ apply_gtk() { # Using gradience-cli
     mkdir -p "$XDG_CONFIG_HOME/presets" # create gradience presets folder
     gradience-cli apply -p "$CACHE_DIR"/user/generated/gradience/preset.json --gtk both
 
-    # And set GTK theme manually as Gradience defaults to light adw-gtk3
+    # set GTK theme manually as Gradience defaults to light adw-gtk3
     # (which is unreadable when broken when you use dark mode)
     lightdark=$(get_light_dark)
     if [ "$lightdark" = "light" ]; then
         gsettings set org.gnome.desktop.interface gtk-theme 'adw-gtk3'
     else
-        gsettings set org.gnome.desktop.interface gtk-theme adw-gtk3-dark
+        gsettings set org.gnome.desktop.interface gtk-theme 'adw-gtk3-dark'
     fi
 }
 
 apply_ags() {
     ags run-js "handleStyles(false);"
-    ags run-js 'openColorScheme.value = true; Utils.timeout(2000, () => openColorScheme.value = false);'
+    ags run-js 'openColorScheme.value = true; Utils.timeout(3000, () => openColorScheme.value = false);'
 }
 
 

@@ -1,5 +1,5 @@
 pkgname=ujhhgtg-hyprland-dotfiles
-pkgver=1.2
+pkgver=1.3
 pkgrel=1
 pkgdesc='Ujhhgtg''s Hyprland Dotfiles (modified from Illogical Impulse) Dependencies'
 arch=('x86_64')
@@ -78,11 +78,14 @@ depends=(
     playerctl
     swww
     fastfetch
-    librewolf
-    ttf-meslo-nerd-font-powerlevel10k
-    code
-    code-features
-    code-marketplace
+    #librewolf
+    ttf-firacode-nerd
+    #ttf-meslo-nerd-font-powerlevel10k
+    #code
+    #code-features
+    #code-marketplace
+    zed
+    #zen-twilight
 
     # Xdg
     xdg-desktop-portal

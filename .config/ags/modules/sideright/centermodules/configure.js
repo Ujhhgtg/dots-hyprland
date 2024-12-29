@@ -65,11 +65,11 @@ export default (props) => {
                             icon: 'border_clear',
                             name: 'Transparency',
                             desc: '[AGS]\nMake shell elements transparent\nBlur is also recommended if you enable this',
-                            initValue: exec(`bash -c "sed -n \'2p\' ${GLib.get_user_state_dir()}/ags/user/colormode.txt"`) == "transparent",
+                            initValue: exec(`bash -c "sed -n \'2p\' ${GLib.get_user_state_dir()}/dots-hyprland/user/colormode.txt"`) == "transparent",
                             onChange: (self, newValue) => {
                                 const transparency = newValue == 0 ? "opaque" : "transparent";
                                 console.log(transparency);
-                                execAsync([`bash`, `-c`, `mkdir -p ${GLib.get_user_state_dir()}/ags/user && sed -i "2s/.*/${transparency}/"  ${GLib.get_user_state_dir()}/ags/user/colormode.txt`])
+                                execAsync([`bash`, `-c`, `mkdir -p ${GLib.get_user_state_dir()}/dots-hyprland/user && sed -i "2s/.*/${transparency}/"  ${GLib.get_user_state_dir()}/dots-hyprland/user/colormode.txt`])
                                     .then(execAsync(['bash', '-c', `~/.local/bin/dots-hyprland/color_generation/switchcolor.sh`]))
                                     .catch(print);
                             },

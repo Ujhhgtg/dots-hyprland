@@ -9,7 +9,7 @@ export default (id = '') => PopupWindow({
     keymode: 'on-demand',
     visible: false,
     anchor: ['top', 'bottom', 'left', 'right'],
-    layer: 'top',
+    layer: 'overlay',
     child: Widget.Box({
         vertical: true,
         children: [

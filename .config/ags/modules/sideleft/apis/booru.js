@@ -12,12 +12,12 @@ import { chatEntry } from '../apiwidgets.js';
 import { ConfigToggle } from '../../.commonwidgets/configwidgets.js';
 import { SystemMessage } from './ai_chatmessage.js';
 
-const IMAGE_REVEAL_DELAY = 13; // Some wait for inits n other weird stuff
+const IMAGE_REVEAL_DELAY = 13; // some wait for inits and other weird stuff
 const USER_CACHE_DIR = GLib.get_user_cache_dir();
 
 // Create cache folder and clear pics from previous session
-Utils.exec(`bash -c 'mkdir -p ${USER_CACHE_DIR}/ags/media/waifus'`);
-Utils.exec(`bash -c 'rm ${USER_CACHE_DIR}/ags/media/waifus/*'`);
+Utils.exec(`bash -c 'rm -r ${USER_CACHE_DIR}/dots-hyprland/media/waifus'`);
+Utils.exec(`bash -c 'mkdir -p ${USER_CACHE_DIR}/dots-hyprland/media/waifus'`);
 
 const TagButton = (command) => Button({
     className: 'sidebar-chat-chip sidebar-chat-chip-action txt txt-small',
@@ -167,7 +167,7 @@ const BooruPage = (taglist, serviceName = 'Booru') => {
             // css: `background-image: url('${data.preview_url}');`,
             attribute: {
                 'update': (self, data, force = false) => {
-                    const imagePath = `${USER_CACHE_DIR}/ags/media/waifus/${data.md5}.${data.file_ext}`;
+                    const imagePath = `${USER_CACHE_DIR}/dots-hyprland/media/waifus/${data.md5}.${data.file_ext}`;
                     const widgetStyleContext = imageArea.get_style_context();
                     const widgetWidth = widgetStyleContext.get_property('min-width', Gtk.StateFlags.NORMAL);
                     const widgetHeight = widgetWidth / data.aspect_ratio;

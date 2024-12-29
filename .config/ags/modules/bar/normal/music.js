@@ -8,13 +8,13 @@ import { AnimatedCircProg } from "../../.commonwidgets/cairo_circularprogress.js
 import { MaterialIcon } from '../../.commonwidgets/materialicon.js';
 import { showMusicControls } from '../../../variables.js';
 
-const CUSTOM_MODULE_CONTENT_INTERVAL_FILE = `${GLib.get_user_cache_dir()}/ags/user/scripts/custom-module-interval.txt`;
-const CUSTOM_MODULE_CONTENT_SCRIPT = `${GLib.get_user_cache_dir()}/ags/user/scripts/custom-module-poll.sh`;
-const CUSTOM_MODULE_LEFTCLICK_SCRIPT = `${GLib.get_user_cache_dir()}/ags/user/scripts/custom-module-leftclick.sh`;
-const CUSTOM_MODULE_RIGHTCLICK_SCRIPT = `${GLib.get_user_cache_dir()}/ags/user/scripts/custom-module-rightclick.sh`;
-const CUSTOM_MODULE_MIDDLECLICK_SCRIPT = `${GLib.get_user_cache_dir()}/ags/user/scripts/custom-module-middleclick.sh`;
-const CUSTOM_MODULE_SCROLLUP_SCRIPT = `${GLib.get_user_cache_dir()}/ags/user/scripts/custom-module-scrollup.sh`;
-const CUSTOM_MODULE_SCROLLDOWN_SCRIPT = `${GLib.get_user_cache_dir()}/ags/user/scripts/custom-module-scrolldown.sh`;
+const CUSTOM_MODULE_CONTENT_INTERVAL_FILE = `${GLib.get_user_cache_dir()}/dots-hyprland/user/scripts/custom-module-interval.txt`;
+const CUSTOM_MODULE_CONTENT_SCRIPT = `${GLib.get_user_cache_dir()}/dots-hyprland/user/scripts/custom-module-poll.sh`;
+const CUSTOM_MODULE_LEFTCLICK_SCRIPT = `${GLib.get_user_cache_dir()}/dots-hyprland/user/scripts/custom-module-leftclick.sh`;
+const CUSTOM_MODULE_RIGHTCLICK_SCRIPT = `${GLib.get_user_cache_dir()}/dots-hyprland/user/scripts/custom-module-rightclick.sh`;
+const CUSTOM_MODULE_MIDDLECLICK_SCRIPT = `${GLib.get_user_cache_dir()}/dots-hyprland/user/scripts/custom-module-middleclick.sh`;
+const CUSTOM_MODULE_SCROLLUP_SCRIPT = `${GLib.get_user_cache_dir()}/dots-hyprland/user/scripts/custom-module-scrollup.sh`;
+const CUSTOM_MODULE_SCROLLDOWN_SCRIPT = `${GLib.get_user_cache_dir()}/dots-hyprland/user/scripts/custom-module-scrolldown.sh`;
 
 function trimTrackTitle(title) {
     if (!title) return '';
@@ -96,13 +96,9 @@ const TrackProgress = () => {
     })
 }
 
-const switchToRelativeWorkspace = async (self, num) => {
-    try {
-        const Hyprland = (await import('resource:///com/github/Aylur/ags/service/hyprland.js')).default;
-        Hyprland.messageAsync(`dispatch workspace ${num > 0 ? '+' : ''}${num}`).catch(print);
-    } catch {
-        execAsync(['bash', '-c', `~/.local/bin/dots-hyprland/sway/swayToRelativeWs.sh`, `${num}`]).catch(print);
-    }
+const switchToRelativeWorkspace = async (_self, num) => {
+    const Hyprland = (await import('resource:///com/github/Aylur/ags/service/hyprland.js')).default;
+    Hyprland.messageAsync(`dispatch workspace ${num > 0 ? '+' : ''}${num}`).catch(print);
 }
 
 export default () => {
@@ -198,7 +194,7 @@ export default () => {
                                     'bar-cpu-circprog', 'bar-cpu-txt', 'bar-cpu-icon'),
                             ]
                         }),
-                        setup: (self) => self.hook(Mpris, label => {
+                        setup: (self) => self.hook(Mpris, _label => {
                             const mpris = Mpris.getPlayer('');
                             self.revealChild = (!mpris);
                         }),
@@ -219,7 +215,7 @@ export default () => {
                     onPrimaryClick: () => showMusicControls.setValue(!showMusicControls.value),
                     onSecondaryClick: () => execAsync(['bash', '-c', 'playerctl next || playerctl position `bc <<< "100 * $(playerctl metadata mpris:length) / 1000000 / 100"` &']).catch(print),
                     onMiddleClick: () => execAsync('playerctl play-pause').catch(print),
-                    setup: (self) => self.on('button-press-event', (self, event) => {
+                    setup: (self) => self.on('button-press-event', (_self, event) => {
                         if (event.get_button()[1] === 8) // Side button
                             execAsync('playerctl previous').catch(print)
                     }),

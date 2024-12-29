@@ -8,7 +8,7 @@ export default () => PopupWindow({
     keymode: 'on-demand',
     anchor: ['right', 'top', 'bottom'],
     name: 'sideright',
-    layer: 'top',
+    layer: 'overlay',
     child: Box({
         children: [
             clickCloseRegion({ name: 'sideright', multimonitor: false, fillMonitor: 'horizontal' }),

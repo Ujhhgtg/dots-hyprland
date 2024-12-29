@@ -28,8 +28,8 @@ const IMAGE_VIEWER_APP = getImageViewerApp(userOptions.apps.imageViewer); // Gno
 const USER_CACHE_DIR = GLib.get_user_cache_dir();
 
 // Create cache folder and clear pics from previous session
-Utils.exec(`bash -c 'mkdir -p ${USER_CACHE_DIR}/ags/media/waifus'`);
-Utils.exec(`bash -c 'rm ${USER_CACHE_DIR}/ags/media/waifus/*'`);
+Utils.exec(`bash -c 'rm -r ${USER_CACHE_DIR}/dots-hyprland/media/waifus'`);
+Utils.exec(`bash -c 'mkdir -p ${USER_CACHE_DIR}/dots-hyprland/media/waifus'`);
 
 const CommandButton = (command) => Button({
     className: 'sidebar-chat-chip sidebar-chat-chip-action txt txt-small',
@@ -216,7 +216,7 @@ const WaifuImage = (taglist) => {
                     downloadState.shown = 'error';
                     return;
                 }
-                thisBlock.attribute.imagePath = `${USER_CACHE_DIR}/ags/media/waifus/${signature}${extension}`;
+                thisBlock.attribute.imagePath = `${USER_CACHE_DIR}/dots-hyprland/media/waifus/${signature}${extension}`;
                 downloadState.shown = 'download';
                 // Width/height
                 const widgetWidth = Math.min(Math.floor(waifuContent.get_allocated_width() * 0.85), width);

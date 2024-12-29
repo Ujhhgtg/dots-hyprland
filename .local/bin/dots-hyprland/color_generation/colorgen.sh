@@ -3,9 +3,10 @@
 XDG_CONFIG_HOME="${XDG_CONFIG_HOME:-$HOME/.config}"
 XDG_CACHE_HOME="${XDG_CACHE_HOME:-$HOME/.cache}"
 XDG_STATE_HOME="${XDG_STATE_HOME:-$HOME/.local/state}"
-CONFIG_DIR="$XDG_CONFIG_HOME/ags"
-CACHE_DIR="$XDG_CACHE_HOME/ags"
-STATE_DIR="$XDG_STATE_HOME/ags"
+AGS_CONFIG_DIR="$XDG_CONFIG_HOME/ags"
+CACHE_DIR="$XDG_CACHE_HOME/dots-hyprland"
+STATE_DIR="$XDG_STATE_HOME/dots-hyprland"
+DOTFILES_SCRIPT_DIR="$HOME/.local/bin/dots-hyprland"
 
 # check if no arguments
 if [ $# -eq 0 ]; then
@@ -13,12 +14,12 @@ if [ $# -eq 0 ]; then
     exit 1
 fi
 
-# check if the file $STATE_DIR/user/colormode.txt exists. if not, create it. else, read it to $lightdark
+# check if $STATE_DIR/user/colormode.txt exists. create if it doesn't and read it to $lightdark
 colormodefile="$STATE_DIR/user/colormode.txt"
 lightdark="dark"
 transparency="opaque"
 materialscheme="vibrant"
-terminalscheme="$XDG_CONFIG_HOME/ags/scripts/templates/terminal/scheme-base.json"
+terminalscheme="$DOTFILES_SCRIPT_DIR/templates/terminal/scheme-base.json"
 
 if [ ! -f $colormodefile ]; then
     echo "dark" > $colormodefile
@@ -34,7 +35,7 @@ else
     transparency=$(sed -n '2p' $colormodefile)
     materialscheme=$(sed -n '3p' $colormodefile)
     if [ "$materialscheme" = "monochrome" ]; then
-      terminalscheme="$XDG_CONFIG_HOME/ags/scripts/templates/terminal/scheme-monochrome.json"
+      terminalscheme="$DOTFILES_SCRIPT_DIR/templates/terminal/scheme-monochrome.json"
     fi
 fi
 backend="material" # color generator backend
@@ -44,7 +45,7 @@ else
     backend=$(cat "$STATE_DIR/user/colorbackend.txt") # either "" or "-l"
 fi
 
-cd "$CONFIG_DIR/scripts/" || exit
+cd "$DOTFILES_SCRIPT_DIR" || exit
 if [[ "$1" = "#"* ]]; then # this is a color
     color_generation/generate_colors_material.py --color "$1" \
     --mode "$lightdark" --scheme "$materialscheme" --transparency "$transparency" \
@@ -77,7 +78,7 @@ elif [ "$backend" = "pywal" ]; then
 
     cat color_generation/pywal_to_material.scss >> "$CACHE_DIR"/user/generated/material_colors.scss
     if [ "$2" = "--apply" ]; then
-        sass -I "$STATE_DIR/scss" -I "$CONFIG_DIR/scss/fallback" "$CACHE_DIR"/user/generated/material_colors.scss "$CACHE_DIR"/user/generated/colors_classes.scss --style compressed
+        sass -I "$STATE_DIR/scss" -I "$AGS_CONFIG_DIR/scss/fallback" "$CACHE_DIR"/user/generated/material_colors.scss "$CACHE_DIR"/user/generated/colors_classes.scss --style compressed
         sed -i "s/ { color//g" "$CACHE_DIR"/user/generated/colors_classes.scss
         sed -i "s/\./$/g" "$CACHE_DIR"/user/generated/colors_classes.scss
         sed -i "s/}//g" "$CACHE_DIR"/user/generated/colors_classes.scss

@@ -9,7 +9,7 @@ import { MaterialIcon } from '../../.commonwidgets/materialicon.js';
 import { AnimatedCircProg } from "../../.commonwidgets/cairo_circularprogress.js";
 import { WWO_CODE, WEATHER_SYMBOL, NIGHT_WEATHER_SYMBOL } from '../../.commondata/weather.js';
 
-const WEATHER_CACHE_FOLDER = `${GLib.get_user_cache_dir()}/ags/weather`;
+const WEATHER_CACHE_FOLDER = `${GLib.get_user_cache_dir()}/dots-hyprland/weather`;
 Utils.exec(`mkdir -p ${WEATHER_CACHE_FOLDER}`);
 
 const BarBatteryProgress = () => {
@@ -100,7 +100,7 @@ const BarBattery = () => Box({
             revealChild: false,
             transition: 'slide_right',
             child: MaterialIcon('bolt', 'norm', { tooltipText: "Charging" }),
-            setup: (self) => self.hook(Battery, revealer => {
+            setup: (self) => self.hook(Battery, _revealer => {
                 self.revealChild = Battery.charging;
             }),
         }),
@@ -175,7 +175,7 @@ const BatteryModule = () => Stack({
                             self.children[0].label = weatherSymbol;
                             self.children[1].label = `${temperature}°${userOptions.weather.preferredUnit} • Feels like ${feelsLike}°${userOptions.weather.preferredUnit}`;
                             self.tooltipText = weatherDesc;
-                        }).catch((err) => {
+                        }).catch((_err) => {
                             try { // Read from cache
                                 const weather = JSON.parse(
                                     Utils.readFile(WEATHER_CACHE_PATH)
@@ -213,13 +213,9 @@ const BatteryModule = () => Stack({
     })
 })
 
-const switchToRelativeWorkspace = async (self, num) => {
-    try {
-        const Hyprland = (await import('resource:///com/github/Aylur/ags/service/hyprland.js')).default;
-        Hyprland.messageAsync(`dispatch workspace ${num > 0 ? '+' : ''}${num}`).catch(print);
-    } catch {
-        execAsync(['bash', '-c', `~/.local/bin/dots-hyprland/sway/swayToRelativeWs.sh`, `${num}`]).catch(print);
-    }
+const switchToRelativeWorkspace = async (_self, num) => {
+    const Hyprland = (await import('resource:///com/github/Aylur/ags/service/hyprland.js')).default;
+    Hyprland.messageAsync(`dispatch workspace ${num > 0 ? '+' : ''}${num}`).catch(print);
 }
 
 export default () => Widget.EventBox({

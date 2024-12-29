@@ -119,9 +119,7 @@ const distroAndVersion = Box({
                         // hyprctl will return unsuccessfully if Hyprland isn't running
                         execAsync([`bash`, `-c`, `hyprctl version | grep -oP "Tag: v\\K\\d+\\.\\d+\\.\\d+"`]).then(version => {
                             label.label = `Hyprland ${version}`;
-                        }).catch(() => execAsync([`bash`, `-c`, `sway -v | cut -d'-' -f1 | sed 's/sway version /v/'`]).then(version => {
-                            label.label = `Sway ${version}`;
-                        }).catch(print));
+                        }).catch(print);
                     },
                 }),
             ]

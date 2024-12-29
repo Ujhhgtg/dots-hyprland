@@ -4,17 +4,14 @@ import Widget from 'resource:///com/github/Aylur/ags/widget.js';
 import * as Utils from 'resource:///com/github/Aylur/ags/utils.js';
 import Mpris from 'resource:///com/github/Aylur/ags/service/mpris.js';
 const { exec, execAsync } = Utils;
-const { Box, EventBox, Icon, Scrollable, Label, Button, Revealer } = Widget;
+const { Box, Label, Button, Revealer } = Widget;
 
 import { fileExists } from '../.miscutils/files.js';
 import { AnimatedCircProg } from "../.commonwidgets/cairo_circularprogress.js";
 import { showMusicControls } from '../../variables.js';
 import { darkMode, hasPlasmaIntegration } from '../.miscutils/system.js';
 
-const COMPILED_STYLE_DIR = `${GLib.get_user_cache_dir()}/ags/user/generated`
-const LIGHTDARK_FILE_LOCATION = `${GLib.get_user_state_dir()}/ags/user/colormode.txt`;
-const colorMode = Utils.exec(`bash -c "sed -n \'1p\' '${LIGHTDARK_FILE_LOCATION}'"`);
-const lightDark = (colorMode == "light") ? '-l' : '';
+const COMPILED_STYLE_DIR = `${GLib.get_user_cache_dir()}/dots-hyprland/user/generated`
 const COVER_COLORSCHEME_SUFFIX = '_colorscheme.css';
 var lastCoverPath = '';
 
@@ -206,13 +203,12 @@ const CoverArt = ({ player, ...rest }) => {
 
                 // Generate colors
                 execAsync(['bash', '-c',
-                    `~/.local/bin/dots-hyprland/color_generation/generate_colors_material.py --path '${coverPath}' --mode ${darkMode.value ? 'dark' : 'light'} > ${GLib.get_user_state_dir()}/ags/scss/_musicmaterial.scss`])
+                    `~/.local/bin/dots-hyprland/color_generation/generate_colors_material.py --path '${coverPath}' --mode ${darkMode.value ? 'dark' : 'light'} > ${GLib.get_user_state_dir()}/dots-hyprland/scss/_musicmaterial.scss`])
                     .then(() => {
                         exec(`wal -i "${player.coverPath}" -n -t -s -e -q ${darkMode.value ? '' : '-l'}`)
-                        exec(`cp ${GLib.get_user_cache_dir()}/wal/colors.scss ${GLib.get_user_state_dir()}/ags/scss/_musicwal.scss`);
-                        exec(`sass -I "${GLib.get_user_state_dir()}/ags/scss" -I "${App.configDir}/scss/fallback" "${App.configDir}/scss/_music.scss" "${stylePath}"`);
+                        exec(`cp ${GLib.get_user_cache_dir()}/wal/colors.scss ${GLib.get_user_state_dir()}/dots-hyprland/scss/_musicwal.scss`);
+                        exec(`sass -I "${GLib.get_user_state_dir()}/dots-hyprland/scss" -I "${App.configDir}/scss/fallback" "${App.configDir}/scss/_music.scss" "${stylePath}"`);
                         Utils.timeout(200, () => {
-                            // self.attribute.showImage(self, coverPath)
                             self.css = `background-image: url('${coverPath}');`; // CSS image
                         });
                         App.applyCss(`${stylePath}`);
@@ -274,33 +270,6 @@ const TrackControls = ({ player, ...rest }) => Widget.Revealer({
     }, 'notify::play-back-status'),
 });
 
-const TrackSource = ({ player, ...rest }) => Widget.Revealer({
-    revealChild: false,
-    transition: 'slide_left',
-    transitionDuration: userOptions.animations.durationLarge,
-    child: Widget.Box({
-        ...rest,
-        className: 'osd-music-pill spacing-h-5',
-        homogeneous: true,
-        children: [
-            Label({
-                hpack: 'fill',
-                justification: 'center',
-                className: 'icon-nerd',
-                setup: (self) => self.hook(player, (self) => {
-                    self.label = detectMediaSource(player.trackCoverUrl);
-                }, 'notify::cover-path'),
-            }),
-        ],
-    }),
-    setup: (self) => self.hook(Mpris, (self) => {
-        const mpris = Mpris.getPlayer('');
-        if (!mpris)
-            self.revealChild = false;
-        else
-            self.revealChild = true;
-    }),
-});
 
 const TrackTime = ({ player, ...rest }) => {
     return Widget.Revealer({
@@ -337,7 +306,6 @@ const TrackTime = ({ player, ...rest }) => {
 }
 
 const PlayState = ({ player }) => {
-    var position = 0;
     const trackCircProg = TrackProgress({ player: player });
     return Widget.Button({
         className: 'osd-music-playstate',

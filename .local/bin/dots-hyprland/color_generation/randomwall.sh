@@ -1,4 +1,8 @@
 #!/usr/bin/env bash
+
+DOTFILES_SCRIPT_DIR="$HOME/.local/bin/dots-hyprland"
+
+# unused by shell
 XDG_CONFIG_HOME="${XDG_CONFIG_HOME:-$HOME/.config}"
-CONFIG_DIR="$XDG_CONFIG_HOME/ags"
-$CONFIG_DIR/scripts/color_generation/switchwall.sh "$(fd . $(xdg-user-dir PICTURES)/wallpapers/ -e .png -e .jpg -e .svg | xargs shuf -n1 -e)"
+mkdir -p "$(xdg-user-dir PICTURES)"
+"$DOTFILES_SCRIPT_DIR"/color_generation/switchwall.sh "$(fd . $(xdg-user-dir PICTURES)/wallpapers/ -e .png -e .jpg -e .svg | xargs shuf -n1 -e)"

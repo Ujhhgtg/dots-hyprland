@@ -1,23 +1,25 @@
-import Hyprland from 'resource:///com/github/Aylur/ags/service/hyprland.js';
-import Service from 'resource:///com/github/Aylur/ags/service.js';
-import * as Utils from 'resource:///com/github/Aylur/ags/utils.js';
+import Hyprland from "resource:///com/github/Aylur/ags/service/hyprland.js";
+import Service from "resource:///com/github/Aylur/ags/service.js";
+import * as Utils from "resource:///com/github/Aylur/ags/utils.js";
 const { exec, execAsync } = Utils;
 
-import { clamp } from '../modules/.miscutils/mathfuncs.js';
+import { clamp } from "../modules/.miscutils/mathfuncs.js";
 
 class BrightnessServiceBase extends Service {
     static {
         Service.register(
             this,
-            { 'screen-changed': ['float'], },
-            { 'screen-value': ['float', 'rw'], },
+            { "screen-changed": ["float"] },
+            { "screen-value": ["float", "rw"] },
         );
     }
 
     _screenValue = 0;
 
     // the getter has to be in snake_case
-    get screen_value() { return this._screenValue; }
+    get screen_value() {
+        return this._screenValue;
+    }
 
     // the setter has to be in snake_case too
     set screen_value(percent) {
@@ -27,8 +29,8 @@ class BrightnessServiceBase extends Service {
         Utils.execAsync(this.setBrightnessCmd(percent))
             .then(() => {
                 // signals has to be explicity emitted
-                this.emit('screen-changed', percent);
-                this.notify('screen-value');
+                this.emit("screen-changed", percent);
+                this.notify("screen-value");
 
                 // or use Service.changed(propName: string) which does the above two
                 // this.changed('screen');
@@ -38,7 +40,7 @@ class BrightnessServiceBase extends Service {
 
     // overwriting connectWidget method, lets you
     // change the default event that widgets connect to
-    connectWidget(widget, callback, event = 'screen-changed') {
+    connectWidget(widget, callback, event = "screen-changed") {
         super.connectWidget(widget, callback, event);
     }
 }
@@ -50,13 +52,30 @@ class BrightnessCtlService extends BrightnessServiceBase {
 
     constructor() {
         super();
-        const current = Number(exec('brightnessctl g'));
-        const max = Number(exec('brightnessctl m'));
+        const current = Number(exec("brightnessctl g"));
+        const max = Number(exec("brightnessctl m"));
         this._screenValue = current / max;
     }
 
     setBrightnessCmd(percent) {
         return `brightnessctl s ${percent * 100}% -q`;
+    }
+}
+
+class BrightnessDummyService extends BrightnessServiceBase {
+    static {
+        Service.register(this);
+    }
+
+    constructor() {
+        super();
+        const current = Number(exec("brightnessctl g"));
+        const max = Number(exec("brightnessctl m"));
+        this._screenValue = current / max;
+    }
+
+    setBrightnessCmd(percent) {
+        return "true";
     }
 }
 
@@ -71,10 +90,10 @@ class BrightnessDdcService extends BrightnessServiceBase {
         Utils.execAsync(`ddcutil -b ${this._busNum} getvcp 10 --brief`)
             .then((out) => {
                 // only the last line is useful
-                out = out.split('\n');
+                out = out.split("\n");
                 out = out[out.length - 1];
 
-                out = out.split(' ');
+                out = out.split(" ");
                 const current = Number(out[3]);
                 const max = Number(out[4]);
                 this._screenValue = current / max;
@@ -90,15 +109,14 @@ class BrightnessDdcService extends BrightnessServiceBase {
 async function listDdcMonitorsSnBus() {
     let ddcSnBus = {};
     try {
-        const out = await Utils.execAsync('ddcutil detect --brief');
-        const displays = out.split('\n\n');
-        displays.forEach(display => {
+        const out = await Utils.execAsync("ddcutil detect --brief");
+        const displays = out.split("\n\n");
+        displays.forEach((display) => {
             const reg = /^Display \d+/;
-            if (!reg.test(display))
-                return;
-            const lines = display.split('\n');
-            const sn = lines[3].split(':')[3];
-            const busNum = lines[1].split('/dev/i2c-')[1];
+            if (!reg.test(display)) return;
+            const lines = display.split("\n");
+            const sn = lines[3].split(":")[3];
+            const busNum = lines[1].split("/dev/i2c-")[1];
             ddcSnBus[sn] = busNum;
         });
     } catch (err) {
@@ -114,8 +132,10 @@ const ddcSnBus = await listDdcMonitorsSnBus();
 for (let i = 0; i < service.length; i++) {
     const monitorName = Hyprland.monitors[i].name;
     const monitorSn = Hyprland.monitors[i].serial;
-    const preferredController = userOptions.brightness.controllers[monitorName]
-        || userOptions.brightness.controllers.default || "auto";
+    const preferredController =
+        userOptions.brightness.controllers[monitorName] ||
+        userOptions.brightness.controllers.default ||
+        "auto";
     if (preferredController) {
         switch (preferredController) {
             case "brightnessctl":
@@ -125,13 +145,20 @@ for (let i = 0; i < service.length; i++) {
                 service[i] = new BrightnessDdcService(ddcSnBus[monitorSn]);
                 break;
             case "auto":
-                if (monitorSn in ddcSnBus && !!exec(`bash -c 'command -v ddcutil'`))
+                if (
+                    monitorSn in ddcSnBus &&
+                    !!exec(`bash -c 'command -v ddcutil'`)
+                )
                     service[i] = new BrightnessDdcService(ddcSnBus[monitorSn]);
-                else
-                    service[i] = new BrightnessCtlService();
+                else service[i] = new BrightnessCtlService();
+                break;
+            case "dummy":
+                service[i] = new BrightnessDummyService();
                 break;
             default:
-                throw new Error(`Unknown brightness controller ${preferredController}`);
+                throw new Error(
+                    `Unknown brightness controller ${preferredController}`,
+                );
         }
     }
 }

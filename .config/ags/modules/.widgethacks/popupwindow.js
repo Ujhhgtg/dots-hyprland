@@ -13,7 +13,7 @@ export default ({
     return Window({
         name,
         visible: false,
-        layer: 'top',
+        layer: 'overlay',
         ...props,
 
         child: Box({
