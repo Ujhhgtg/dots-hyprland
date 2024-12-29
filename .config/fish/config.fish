@@ -6,7 +6,9 @@ function fish_greeting
         cat ~/.cache/ags/user/generated/terminal/sequences.txt
     end
 
-    fastfetch
+    if command fastfetch
+        fastfetch
+    end
 end
 
 if status is-interactive
