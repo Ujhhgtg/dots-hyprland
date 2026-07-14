@@ -8,6 +8,23 @@ ContentPage {
     forceWidth: true
 
     ContentSection {
+        icon: "image"
+        title: Translation.tr("Wallpaper")
+
+        ConfigSwitch {
+            buttonIcon: "hide_image"
+            text: Translation.tr("Use external wallpaper renderer")
+            checked: Config.options.background.useExternalRenderer
+            onCheckedChanged: {
+                Config.options.background.useExternalRenderer = checked;
+            }
+            StyledToolTip {
+                text: Translation.tr("Disables the built-in image rendering layer.\nColor theming, parallax, and all other features continue to work.\nUse this when an external provider handles the wallpaper (e.g. waywallen, swww, hyprpaper).")
+            }
+        }
+    }
+
+    ContentSection {
         icon: "sync_alt"
         title: Translation.tr("Parallax")
 

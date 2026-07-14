@@ -213,6 +213,7 @@ Singleton {
                 property string wallpaperPath: ""
                 property string thumbnailPath: ""
                 property bool hideWhenFullscreen: true
+                property bool useExternalRenderer: false // When true, suppress built-in image rendering (for e.g. waywallen, swww, hyprpaper)
                 property JsonObject parallax: JsonObject {
                     property bool vertical: false
                     property bool autoVertical: false
