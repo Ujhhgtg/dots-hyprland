@@ -137,11 +137,19 @@ Singleton {
         return StringUtils.stringListContainsSubstring(entry.toLowerCase(), unsafeKeywords);
     }
 
+    function isMathQuery(query) {
+        return /^\d/.test(query) || query.startsWith(Config.options.search.prefix.math);
+    }
+
     Timer {
         id: nonAppResultsTimer
         interval: Config.options.search.nonAppResultDelay
         onTriggered: {
-            let expr = root.query;
+            const query = root.query;
+            if (!root.isMathQuery(query))
+                return;
+
+            let expr = query;
             if (expr.startsWith(Config.options.search.prefix.math)) {
                 expr = expr.slice(Config.options.search.prefix.math.length);
             }
@@ -227,7 +235,13 @@ Singleton {
         }
 
         ////////////////// Init ///////////////////
-        nonAppResultsTimer.restart();
+        // qalc takes a full process start for every request. Starting it for
+        // ordinary app searches makes each keystroke compete with the UI.
+        if (root.isMathQuery(root.query)) {
+            nonAppResultsTimer.restart();
+        } else {
+            nonAppResultsTimer.stop();
+        }
         const mathResultObject = resultComp.createObject(null, {
             name: root.mathResult,
             verb: Translation.tr("Copy"),
