@@ -15,7 +15,6 @@ Singleton {
     property string emojiScriptPath: `${Directories.config}/hypr/hyprland/scripts/fuzzel-emoji.sh`
 	property string lineBeforeData: "### DATA ###"
     property list<var> list
-    property int resultLimit: 30
     readonly property var preparedEntries: list.map(a => ({
         name: Fuzzy.prepare(`${a}`),
         entry: a
@@ -28,14 +27,12 @@ Singleton {
             })).filter(item => item.score > root.scoreThreshold)
                 .sort((a, b) => b.score - a.score)
             return results
-                .slice(0, root.resultLimit)
                 .map(item => item.entry)
         }
 
         return Fuzzy.go(search, preparedEntries, {
             all: true,
-            key: "name",
-            limit: root.resultLimit
+            key: "name"
         }).map(r => {
             return r.obj.entry
         });

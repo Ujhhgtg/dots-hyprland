@@ -12,7 +12,6 @@ Singleton {
     id: root
     property bool sloppySearch: Config.options?.search.sloppy ?? false
     property real scoreThreshold: 0.2
-    property int resultLimit: 30
     property var substitutions: ({
         "code-url-handler": "visual-studio-code",
         "Code": "visual-studio-code",
@@ -67,14 +66,12 @@ Singleton {
             })).filter(item => item.score > root.scoreThreshold)
                 .sort((a, b) => b.score - a.score)
             return results
-                .slice(0, root.resultLimit)
                 .map(item => item.entry)
         }
 
         return Fuzzy.go(search, preppedNames, {
             all: true,
-            key: "name",
-            limit: root.resultLimit
+            key: "name"
         }).map(r => {
             return r.obj.entry
         });
