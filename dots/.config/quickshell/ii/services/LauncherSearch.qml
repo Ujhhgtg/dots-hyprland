@@ -14,6 +14,13 @@ Singleton {
 
     property string query: ""
 
+    onQueryChanged: {
+        nonAppResultsTimer.stop();
+        mathProc.running = false;
+        if (root.isMathQuery(query))
+            nonAppResultsTimer.restart();
+    }
+
     function ensurePrefix(prefix) {
         if ([Config.options.search.prefix.action, Config.options.search.prefix.app, Config.options.search.prefix.clipboard, Config.options.search.prefix.emojis, Config.options.search.prefix.math, Config.options.search.prefix.shellCommand, Config.options.search.prefix.webSearch,].some(i => root.query.startsWith(i))) {
             root.query = prefix + root.query.slice(1);
@@ -235,13 +242,6 @@ Singleton {
         }
 
         ////////////////// Init ///////////////////
-        // qalc takes a full process start for every request. Starting it for
-        // ordinary app searches makes each keystroke compete with the UI.
-        if (root.isMathQuery(root.query)) {
-            nonAppResultsTimer.restart();
-        } else {
-            nonAppResultsTimer.stop();
-        }
         const mathResultObject = resultComp.createObject(null, {
             name: root.mathResult,
             verb: Translation.tr("Copy"),

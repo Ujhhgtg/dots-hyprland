@@ -15,6 +15,7 @@ Singleton {
     property string pressPasteCommand: "ydotool key -d 1 29:1 47:1 47:0 29:0"
     property bool sloppySearch: Config.options?.search.sloppy ?? false
     property real scoreThreshold: 0.2
+    property int resultLimit: 30
     property list<string> entries: []
     readonly property var preparedEntries: entries.map(a => ({
         name: Fuzzy.prepare(`${a.replace(/^\s*\S+\s+/, "")}`),
@@ -22,7 +23,7 @@ Singleton {
     }))
     function fuzzyQuery(search: string): var {
         if (search.trim() === "") {
-            return entries;
+            return entries.slice(0, root.resultLimit);
         }
         if (root.sloppySearch) {
             const results = entries.slice(0, 100).map(str => ({
@@ -31,12 +32,14 @@ Singleton {
             })).filter(item => item.score > root.scoreThreshold)
                 .sort((a, b) => b.score - a.score)
             return results
+                .slice(0, root.resultLimit)
                 .map(item => item.entry)
         }
 
         return Fuzzy.go(search, preparedEntries, {
             all: true,
-            key: "name"
+            key: "name",
+            limit: root.resultLimit
         }).map(r => {
             return r.obj.entry
         });

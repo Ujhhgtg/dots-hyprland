@@ -18,12 +18,18 @@ FooterRectangle {
     property alias searchInput: searchInput
     property alias text: searchInput.text
     implicitHeight: outline.implicitHeight + verticalPadding * 2
+    readonly property int queryDebounceInterval: 100
 
     signal accepted()
 
     Component.onCompleted: forceFocus()
     function forceFocus() {
         searchInput.forceActiveFocus();
+    }
+    function commitQuery() {
+        queryDebounceTimer.stop();
+        if (LauncherSearch.query !== searchInput.text)
+            LauncherSearch.query = searchInput.text;
     }
 
     focus: true
@@ -77,6 +83,13 @@ FooterRectangle {
                 focus: true
                 Layout.fillWidth: true
 
+                Timer {
+                    id: queryDebounceTimer
+                    interval: root.queryDebounceInterval
+                    repeat: false
+                    onTriggered: root.commitQuery()
+                }
+
                 WText {
                     anchors {
                         left: parent.left
@@ -88,7 +101,10 @@ FooterRectangle {
                     font.pixelSize: Looks.font.pixelSize.large
                 }
 
+                onTextChanged: queryDebounceTimer.restart()
+
                 onAccepted: {
+                    root.commitQuery();
                     root.accepted();
                 }
             }

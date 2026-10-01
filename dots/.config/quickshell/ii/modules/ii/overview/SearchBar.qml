@@ -14,9 +14,16 @@ RowLayout {
     property bool animateWidth: false
     property alias searchInput: searchInput
     property string searchingText
+    readonly property int queryDebounceInterval: 100
 
     function forceFocus() {
         searchInput.forceActiveFocus();
+    }
+
+    function commitQuery() {
+        queryDebounceTimer.stop();
+        if (LauncherSearch.query !== searchInput.text)
+            LauncherSearch.query = searchInput.text;
     }
 
     enum SearchPrefixType { Action, App, Clipboard, Emojis, Math, ShellCommand, WebSearch, DefaultSearch }
@@ -78,9 +85,17 @@ RowLayout {
             }
         }
 
-        onTextChanged: LauncherSearch.query = text
+        Timer {
+            id: queryDebounceTimer
+            interval: root.queryDebounceInterval
+            repeat: false
+            onTriggered: root.commitQuery()
+        }
+
+        onTextChanged: queryDebounceTimer.restart()
 
         onAccepted: {
+            root.commitQuery();
             if (appResults.count > 0) {
                 // Get the first visible delegate and trigger its click
                 let firstItem = appResults.itemAtIndex(0);
