@@ -3,6 +3,8 @@ pragma Singleton
 import qs.modules.common
 import qs.modules.common.functions
 import Quickshell
+import Quickshell.Io
+import QtQuick
 
 /**
  * - Eases fuzzy searching for applications by name
@@ -40,13 +42,54 @@ Singleton {
         }
     ]
 
-    // Deduped list to fix double icons
-    readonly property list<DesktopEntry> list: Array.from(DesktopEntries.applications.values)
-        .filter((app, index, self) => 
-            index === self.findIndex((t) => (
-                t.id === app.id
-            ))
-    )
+    // Keep application metadata outside Quickshell's reactive DesktopEntries
+    // manager. The latter rescans continuously on this Quickshell/Qt combination.
+    property var list: []
+
+    function refreshList() {
+        if (!desktopEntryScanner.running)
+            desktopEntryScanner.running = true;
+    }
+
+    Timer {
+        interval: 30000
+        repeat: true
+        triggeredOnStart: true
+        running: true
+        onTriggered: root.refreshList()
+    }
+
+    Process {
+        id: desktopEntryScanner
+        command: ["python3", FileUtils.trimFileProtocol(Qt.resolvedUrl("../scripts/desktop_entries.py"))]
+        stdout: StdioCollector {
+            onStreamFinished: {
+                try {
+                    const parsed = JSON.parse(text);
+                    root.list = parsed.map(entry => ({
+                        id: entry.id,
+                        name: entry.name,
+                        icon: entry.icon,
+                        comment: entry.comment,
+                        genericName: entry.genericName,
+                        keywords: entry.keywords,
+                        command: entry.command,
+                        runInTerminal: entry.runInTerminal,
+                        execute: () => Quickshell.execDetached(entry.command),
+                        actions: (entry.actions ?? []).map(action => ({
+                            name: action.name,
+                            icon: action.icon,
+                            command: action.command,
+                            runInTerminal: action.runInTerminal,
+                            execute: () => Quickshell.execDetached(action.command),
+                        })),
+                    }));
+                } catch (error) {
+                    console.error(`[AppSearch] Could not parse desktop entries: ${error}`);
+                }
+            }
+        }
+    }
     
     readonly property var preppedNames: list.map(a => ({
         name: Fuzzy.prepare(`${a.name} `),
@@ -98,8 +141,9 @@ Singleton {
     function guessIcon(str) {
         if (!str || str.length == 0) return "image-missing";
 
-        // Quickshell's desktop entry lookup
-        const entry = DesktopEntries.byId(str);
+        // Resolve against the periodic snapshot; calling DesktopEntries.byId()
+        // from workspace icon bindings retriggers the scanner on Quickshell 0.2.x.
+        const entry = list.find(app => app.id === str);
         if (entry) return entry.icon;
 
         // Normal substitutions
@@ -154,8 +198,7 @@ Singleton {
             if (iconExists(guess)) return guess;
         }
 
-        // Quickshell's desktop entry lookup
-        const heuristicEntry = DesktopEntries.heuristicLookup(str);
+        const heuristicEntry = list.find(app => app.name === str || app.id === str);
         if (heuristicEntry) return heuristicEntry.icon;
 
         // Give up
